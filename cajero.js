@@ -1,64 +1,91 @@
+// ||||||||||||| Clases |||||||||||||
+
 class Billete
 {
-  constructor(v, c)
+  constructor(v, c, i)
   {
     this.valor = v;
     this.cantidad = c;
+    this.imgUrl = i;
   }
 }
+// |||||||||||| Variables |||||||||||||
+
+var caja = []; // array de los blletes que tengo
+var dineroDisponible = document.getElementById("dineroDisponible")
+
+// cargando la caja con blletes
+caja.push( new Billete (500, 50, "billete500.jpg") );
+caja.push( new Billete (100, 65, "billete100.jpg") );
+caja.push( new Billete (50, 45, "billete50.jpg") );
+caja.push( new Billete (10, 35, "billete10.jpg") );
+caja.push( new Billete (5, 45, "billete5.jpg") );
+caja.push( new Billete (1, 300, "billete1.jpg") );
+
+
+var dinero = 0; // User Input
+
+var resultDisplay = document.getElementById("resultado"); // tag del html donde se muestra el resultaado 
+
+// ||||||||||| Funciones ||||||||||| 
 
 function entregarDinero()
 {
-  var t = document.getElementById("dinero");
-  dinero = parseInt(t.value);
-  for(var bi of caja)
+  var entrega = [];
+  var div = 0;
+  var papeles = 0;
+  var getDinero = document.getElementById("dinero");
+  dinero = parseInt(getDinero.value);
+  
+  resultDisplay.innerHTML = "";
+
+  for(var b of caja)
   {
     if (dinero > 0)
     {
-      div = Math.floor(dinero / bi.valor);
-      if (div > bi.cantidad)
+      div = Math.floor(dinero / b.valor);
+      if (div > b.cantidad)
       {
-        papeles = bi.cantidad;
+        papeles = b.cantidad;
+        b.cantidad = 0;
       }
       else
       {
         papeles = div;
+        b.cantidad = b.cantidad - div
       }
-      entregado.push( new Billete(bi.valor, papeles) );
-      dinero = dinero - (bi.valor * papeles);
+      entrega.push( new Billete(b.valor, papeles, b.imgUrl) );
+      dinero = dinero - (b.valor * papeles);
     }
   }
+
   if (dinero > 0)
   {
-    resultado.innerHTML = "Soy Pobre"
-  } 
-  else 
+    resultDisplay.innerHTML = "Soy Pobre";
+  } else 
   {
-    for (var e of entregado)
+    for (var e of entrega)
     {
       if (e.cantidad > 0)
       {
-        resultado.innerHTML += e.cantidad + " billetes de $" + e.valor + "<br />";
+        resultDisplay.innerHTML += e.cantidad + ": " + `<img src="` + e.imgUrl + `" width="130" height="70" style="box-shadow: 0px 0px 7px rgba(0,0,0,0.66);">` + "<br /> <br />";
       }
     }
   }
-  console.log(entregado)
+  showMoney();
 }
 
-var caja = [];
-var entregado = [];
+function showMoney() 
+{
+  dineroDisponible.innerHTML = "";
+  for (var b of caja) 
+  {
+    dineroDisponible.innerHTML += "Disponemos de " + b.cantidad + " billetes de " + b.valor + "<br />";
+  }
+}
+// ||||||||||| DA CODE |||||||||||
 
-caja.push( new Billete (100, 2) );
-caja.push( new Billete (50, 10) );
-caja.push( new Billete (20, 30) );
-caja.push( new Billete (10, 30) );
-caja.push( new Billete (5, 30) );
-
-var dinero = 0;
-
-var div = 0;
-var papeles = 0;
-
-var resultado = document.getElementById("resultado");
-var b = document.getElementById("extraer");
-b.addEventListener("click", entregarDinero);
+// button that invokes entregarDinero() when clicked
+document.getElementById("extraer").addEventListener("click", entregarDinero);
+showMoney();
+// |||||||||||  The End  |||||||||||
